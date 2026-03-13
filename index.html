@@ -7,10 +7,32 @@
   <link rel="stylesheet" href="estilos.css">
   
   <script>
-    if (history.scrollRestoration) {
-      history.scrollRestoration = 'manual';
+    if (window.performance && performance.getEntriesByType) {
+      const navEntries = performance.getEntriesByType("navigation");
+      if (navEntries.length > 0) {
+        const navType = navEntries[0].type;
+
+        if (navType === "reload") {
+          // 1. Si recarga (F5), quitamos el #titulo de la URL limpiamente y lo mandamos al inicio
+          if (window.location.hash) {
+            history.replaceState(null, null, window.location.pathname + window.location.search);
+          }
+          if (history.scrollRestoration) history.scrollRestoration = 'manual';
+          window.scrollTo(0, 0);
+
+        } else if (navType === "back_forward") {
+          // 2. Si vuelve hacia "Atrás" desde un producto, activamos la memoria automática del navegador
+          if (history.scrollRestoration) history.scrollRestoration = 'auto';
+
+        } else {
+          // 3. Navegación normal (ej: entra escribiendo la web).
+          if (!window.location.hash) {
+            if (history.scrollRestoration) history.scrollRestoration = 'manual';
+            window.scrollTo(0, 0);
+          }
+        }
+      }
     }
-    window.scrollTo(0, 0);
   </script>
 </head>
 <body>
