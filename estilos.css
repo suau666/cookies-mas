@@ -181,7 +181,7 @@ body:not(.page-producto) #page-content { animation: fadeUp 0.55s var(--ease-out)
 .menu-header a:hover::after,
 .menu-header a.tap-active::after { width: 100%; }
 
-/* ── BOTONES CONTACTO (Solución Definitiva para Desktop y Mobile) ── */
+/* ── BOTONES CONTACTO ── */
 
 .contactos-desk {
   display: flex;
@@ -202,7 +202,6 @@ body:not(.page-producto) #page-content { animation: fadeUp 0.55s var(--ease-out)
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Tamaños estrictos para que Flexbox no los esconda */
   width: 40px;
   height: 40px;
   min-width: 40px;
@@ -214,7 +213,6 @@ body:not(.page-producto) #page-content { animation: fadeUp 0.55s var(--ease-out)
 }
 
 .contactos-desk .c-btn {
-  /* Escala progresiva en desktop */
   width:  calc(clamp(28px, 2.2vw, 34px) - var(--shrink,0) * 5px);
   height: calc(clamp(28px, 2.2vw, 34px) - var(--shrink,0) * 5px);
   min-width: 0; min-height: 0;
@@ -225,7 +223,6 @@ body:not(.page-producto) #page-content { animation: fadeUp 0.55s var(--ease-out)
   box-shadow: 0 5px 14px rgba(0,0,0,0.22);
 }
 
-/* Colores de fondo */
 .c-ig { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
 .c-fb { background: #1877F2; }
 .c-wa { background: #25D366; }
@@ -317,24 +314,23 @@ body:not(.page-producto) #page-content { animation: fadeUp 0.55s var(--ease-out)
   .brand-name { font-size: 26px; }
 }
 
-/* WA float: solo visible en producto siempre; en index solo en mobile */
-body:not(.page-producto) .wa-float { display: none; }
-@media (max-width: 800px) {
-  body:not(.page-producto) .wa-float { display: grid; }
-}
-@media (min-width: 801px) {
-  .page-producto .wa-float { display: none !important; }
-}
 
 /* ════════════════════════════════════════════════
-   HERO SECTION
+   HERO SECTION (100% Pantalla)
    ════════════════════════════════════════════════ */
 .hero {
-  padding: calc(var(--header-offset) + 56px) clamp(20px, 6vw, 80px) 72px;
+  padding: calc(var(--header-offset) + 20px) clamp(20px, 6vw, 80px) 40px;
   text-align: center;
   background: linear-gradient(160deg, var(--bg) 0%, var(--bg-soft) 60%, #eedfc8 100%);
   position: relative;
   overflow: hidden;
+  /* Altura 100% y centrado total */
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .hero::before,
 .hero::after {
@@ -354,8 +350,8 @@ body:not(.page-producto) .wa-float { display: none; }
   bottom: -60px; left: -60px;
 }
 .hero-inner {
+  width: 100%;
   max-width: 680px;
-  margin: 0 auto;
   position: relative;
   z-index: 1;
 }
@@ -414,15 +410,21 @@ body:not(.page-producto) .wa-float { display: none; }
   box-shadow: 0 8px 24px rgba(44,24,16,0.25);
 }
 
+
 /* ════════════════════════════════════════════════
    MAIN CONTENT — INDEX
    ════════════════════════════════════════════════ */
 #contenedor-categorias {
   max-width: 1360px;
   margin: 0 auto;
-  padding: 60px clamp(20px, 5vw, 64px) 80px;
+  /* Padding final reducido para acercarse a la franja oscura */
+  padding: 60px clamp(20px, 5vw, 64px) 20px;
 }
+
 .seccion-productos { margin-bottom: 88px; }
+/* Acortar distancia al final del último grupo de productos */
+.seccion-productos:last-child { margin-bottom: 20px; }
+
 .seccion-header {
   text-align: center;
   margin-bottom: 48px;
@@ -643,6 +645,57 @@ body:not(.page-producto) .wa-float { display: none; }
   letter-spacing: .05em;
 }
 
+
+/* ════════════════════════════════════════════════
+   WA FLOAT (Transiciones Suaves e Inteligentes)
+   ════════════════════════════════════════════════ */
+.wa-float {
+  position: fixed;
+  bottom: 26px; right: 26px;
+  z-index: 900;
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: #25D366;
+  display: grid;
+  place-items: center;
+  animation: waPulse 2.4s ease-out infinite;
+  
+  /* ESTADO INICIAL (Oculto) */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s, transform 0.3s ease;
+}
+
+/* CLASE ACTIVA (Se inyecta con JS) */
+.wa-float.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, visibility 0s linear 0s, transform 0.3s ease;
+}
+
+.wa-float:hover {
+  transform: scale(1.12) translateY(-3px);
+  animation: none;
+  box-shadow: 0 8px 26px rgba(37,211,102,0.5);
+}
+.wa-float svg { width:28px; height:28px; fill:white; }
+
+@keyframes waPulse {
+  0%   { box-shadow: 0 4px 18px rgba(37,211,102,0.38), 0 0 0 0   rgba(37,211,102,0.3); }
+  70%  { box-shadow: 0 4px 18px rgba(37,211,102,0.38), 0 0 0 16px rgba(37,211,102,0); }
+  100% { box-shadow: 0 4px 18px rgba(37,211,102,0.38), 0 0 0 0   rgba(37,211,102,0); }
+}
+
+/* Se oculta para Desktop (para coincidir con las reglas que tenías antes) */
+@media (min-width: 801px) {
+  body .wa-float { display: none !important; }
+}
+
+
 /* ════════════════════════════════════════════════
    PRODUCT DETAIL PAGE
    ════════════════════════════════════════════════ */
@@ -806,30 +859,6 @@ body:not(.page-producto) .wa-float { display: none; }
   letter-spacing: .02em;
 }
 
-@keyframes waPulse {
-  0%   { box-shadow: 0 4px 18px rgba(37,211,102,0.38), 0 0 0 0   rgba(37,211,102,0.3); }
-  70%  { box-shadow: 0 4px 18px rgba(37,211,102,0.38), 0 0 0 16px rgba(37,211,102,0); }
-  100% { box-shadow: 0 4px 18px rgba(37,211,102,0.38), 0 0 0 0   rgba(37,211,102,0); }
-}
-.wa-float {
-  position: fixed;
-  bottom: 26px; right: 26px;
-  z-index: 900;
-  width: 54px; height: 54px;
-  border-radius: 50%;
-  background: #25D366;
-  display: grid;
-  place-items: center;
-  animation: waPulse 2.4s ease-out infinite;
-  transition: transform .25s var(--ease-spring);
-}
-.wa-float:hover {
-  transform: scale(1.12) translateY(-3px);
-  animation: none;
-  box-shadow: 0 8px 26px rgba(37,211,102,0.5);
-}
-.wa-float svg { width:28px; height:28px; fill:white; }
-
 /* ════════════════════════════════════════════════
    RESPONSIVE
    ════════════════════════════════════════════════ */
@@ -849,7 +878,6 @@ body:not(.page-producto) .wa-float { display: none; }
   .titulo-seccion { font-size: 44px; }
   .breadcrumb, .producto-detalle { padding-left: 20px; padding-right: 20px; }
   #producto-nombre  { font-size: 34px; }
-  .hero { padding-top: calc(var(--header-offset) + 40px); padding-bottom: 52px; }
   .hero-title { font-size: clamp(46px, 13vw, 80px); }
   .page-producto #page-content { padding-top: calc(var(--header-offset) + 10px); }
   .breadcrumb { margin-bottom: 10px; }

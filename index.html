@@ -5,12 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cookies &amp; Más</title>
   <link rel="stylesheet" href="estilos.css">
+  
+  <script>
+    if (history.scrollRestoration) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+  </script>
 </head>
 <body>
 
   <div id="site-header"></div>
 
-  <!-- WhatsApp floating button — solo visible en mobile (ver CSS) -->
   <a href="https://wa.me/5492954605522" target="_blank" rel="noopener noreferrer"
      class="wa-float" aria-label="WhatsApp">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -18,20 +24,28 @@
     </svg>
   </a>
 
-  <!-- ═══ HERO ═══ -->
-  <section class="hero">
+  <section class="hero" id="hero-section">
     <div class="hero-inner">
       <p class="hero-eyebrow">Hecho con amor, desde casa</p>
       <h1 class="hero-title">Dulces que <em>enamoran</em></h1>
       <p class="hero-desc">Postres artesanales, tartas y cookies elaborados con los mejores ingredientes para cada ocasión especial.</p>
       <a href="#postres" class="hero-btn">Ver productos ↓</a>
+      
+      <div class="hero-mobile-box mobile-only">
+        <p class="hero-mobile-prompt">¿Qué se te antoja hoy?</p>
+        <div class="hero-mobile-cats">
+          <a href="#postres" class="cat-btn">Postres</a>
+          <a href="#tartas" class="cat-btn">Tartas</a>
+          <a href="#tortas" class="cat-btn">Tortas</a>
+          <a href="#cookies" class="cat-btn">Cookies</a>
+        </div>
+      </div>
+      
     </div>
   </section>
 
-  <!-- ═══ PRODUCTOS ═══ -->
   <main id="contenedor-categorias"></main>
 
-  <!-- ═══ CTA ═══ -->
   <section class="cta-section">
     <div class="cta-inner">
       <p class="cta-eyebrow">Encargos personalizados</p>
@@ -54,11 +68,28 @@
   <script src="productos.js"></script>
   <script src="header-loader.js"></script>
 
-  <!-- Mover wa-float al body para que position:fixed funcione correctamente -->
   <script>
     window.addEventListener("load", () => {
       const wa = document.querySelector(".wa-float");
+      const hero = document.getElementById("hero-section");
+      
+      // Aseguramos que esté en el body
       if (wa && wa.parentElement !== document.body) document.body.appendChild(wa);
+
+      // Si existe el Hero, observamos cuándo desaparece para mostrar el WA
+      if (hero && wa) {
+        const waObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) {
+              wa.classList.add("show");
+            } else {
+              wa.classList.remove("show");
+            }
+          });
+        }, { threshold: 0.05 }); // Se dispara cuando el hero casi desaparece por completo
+        
+        waObserver.observe(hero);
+      }
     });
   </script>
 
