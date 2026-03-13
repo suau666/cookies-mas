@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Producto — Cookies &amp; Más</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body class="page-producto">
+
+  <div id="site-header"></div>
+
+  <!-- WhatsApp floating button (fuera de page-content para no verse afectado por animaciones) -->
+  <a href="https://wa.me/5492954605522" target="_blank" rel="noopener noreferrer"
+     class="wa-float" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    </svg>
+  </a>
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Ruta de navegación">
+    <a href="index.html">Inicio</a>
+    <span class="breadcrumb-sep">›</span>
+    <span id="breadcrumb-cat">Producto</span>
+    <span class="breadcrumb-sep">›</span>
+    <span id="breadcrumb-nom">—</span>
+  </nav>
+
+  <!-- Product detail: grid-areas para reordenar en mobile -->
+  <section class="producto-detalle">
+    <div class="detalle-contenedor">
+
+      <!-- Info (título + descripción) -->
+      <div class="detalle-info">
+        <h1 id="producto-nombre"></h1>
+        <p class="detalle-descripcion" id="producto-descripcion"></p>
+      </div>
+
+      <!-- Slider (sticky en desktop) -->
+      <div class="detalle-slider-col">
+        <div id="slider">
+          <button class="prev" aria-label="Anterior">&#8249;</button>
+          <button class="next" aria-label="Siguiente">&#8250;</button>
+          <div class="slider-counter" id="slider-counter" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- Precios -->
+      <div class="bloque-precios">
+        <h3 class="precios-titulo">Precios</h3>
+        <p class="nota-precios">Los precios son estimativos y pueden variar.</p>
+        <ul class="lista-precios"></ul>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="footer-line"></div>
+  <footer class="footer-min">
+    © 2025 Cookies &amp; Más. Todos los derechos reservados.
+  </footer>
+
+  <!-- Mover wa-float al body para que position:fixed funcione correctamente -->
+  <script>
+    window.addEventListener("load", () => {
+      const wa = document.querySelector(".wa-float");
+      if (wa && wa.parentElement !== document.body) document.body.appendChild(wa);
+    });
+  </script>
+
+  <script src="productos.js"></script>
+  <script src="precios.js"></script>
+  <script src="header-loader.js"></script>
+
+  <script>
+    /* ── Get product ── */
+    const params     = new URLSearchParams(window.location.search);
+    const productoID = params.get("item");
+    const producto   = getProductoById(productoID);
+
+    if (!productoID || !producto) {
+      document.body.innerHTML = "<h2 style='text-align:center;padding:4rem'>Producto no encontrado</h2>";
+      throw new Error("Producto no definido");
+    }
+
+    /* ── Fill name & description ── */
+    document.getElementById("producto-nombre").textContent     = producto.nombre;
+    document.getElementById("producto-descripcion").textContent = producto.descripcion || "";
+    document.title = producto.nombre + " — Cookies & Más";
+
+    /* ── Breadcrumb ── */
+    const bcCat = document.getElementById("breadcrumb-cat");
+    const bcNom = document.getElementById("breadcrumb-nom");
+    if (bcCat) bcCat.textContent = producto.categoria;
+    if (bcNom) bcNom.textContent = producto.nombre;
+
+    /* ── Prices ── */
+    const bloquePrecios = document.querySelector(".bloque-precios");
+    const lista         = document.querySelector(".lista-precios");
+    lista.innerHTML     = "";
+
+    function li(label, valor) {
+      return `<li><span class="precio-label">${label}</span><span class="precio-valor">${formatPrecio(valor)}</span></li>`;
+    }
+
+    if (producto.categoria === "Cookies") {
+      if (bloquePrecios) bloquePrecios.style.display = "none";
+
+    } else {
+      const p = precios[productoID];
+
+      if (productoID === "postres-individuales") {
+        const ids = [
+          "brownie","chocotorta","chocooreo","cheesecake","rogel",
+          "balcarce","tiramisu","selva-negra","lemon-cake","flan","pavlova"
+        ];
+        ids.forEach(id => {
+          const prod   = getProductoById(id);
+          const precio = precios[id]?.individual;
+          if (prod && precio) lista.innerHTML += li(prod.nombre, precio);
+        });
+
+      } else if (p) {
+        if (p.tipo === "tarta") {
+          lista.innerHTML += li("Chica",   p.chica);
+          lista.innerHTML += li("Mediana", p.mediana);
+          lista.innerHTML += li("Grande",  p.grande);
+        }
+        if (p.tipo === "postre") {
+          if (productoID === "masas-secas" || productoID === "bombones-quaker") {
+            lista.innerHTML += li("Docena", p.docena);
+          } else {
+            if (p.individual) lista.innerHTML += li("Individual", p.individual);
+            if (p.mediano)    lista.innerHTML += li("Mediano",    p.mediano);
+            if (p.grande)     lista.innerHTML += li("Grande",     p.grande);
+          }
+        }
+        if (p.tipo === "cookie" || p.tipo === "torta") {
+          lista.innerHTML += li("Precio", p.precio);
+        }
+      }
+
+      if (!lista.innerHTML && bloquePrecios) bloquePrecios.style.display = "none";
+    }
+
+    /* ── Slider ── */
+    const slider   = document.getElementById("slider");
+    const prevBtn  = slider.querySelector(".prev");
+    const nextBtn  = slider.querySelector(".next");
+    let imagenes   = [];
+    let currentIdx = 0;
+    let foundAny   = false;
+
+    function addImagen(src, idx) {
+      imagenes.push({ src, idx });
+      imagenes.sort((a, b) => a.idx - b.idx);
+      renderSlider();
+      showSlide(0);
+    }
+
+    const counter = document.getElementById("slider-counter");
+
+    function updateCounter() {
+      if (!counter) return;
+      if (imagenes.length <= 1) { counter.style.display = "none"; return; }
+      counter.style.display = "block";
+      counter.textContent   = (currentIdx + 1) + " / " + imagenes.length;
+    }
+
+    function renderSlider() {
+      slider.querySelectorAll(".slide").forEach(s => s.remove());
+      imagenes.forEach((obj, i) => {
+        const img     = document.createElement("img");
+        img.src       = obj.src;
+        img.alt       = producto.nombre;
+        img.className = "slide" + (i === currentIdx ? " active" : "");
+        slider.appendChild(img);
+      });
+      const single = imagenes.length <= 1;
+      prevBtn.style.display = single ? "none" : "";
+      nextBtn.style.display = single ? "none" : "";
+      updateCounter();
+    }
+
+    function showSlide(i) {
+      if (!imagenes.length) return;
+      currentIdx = (i + imagenes.length) % imagenes.length;
+      slider.querySelectorAll(".slide").forEach((s, idx) =>
+        s.classList.toggle("active", idx === currentIdx)
+      );
+      updateCounter();
+    }
+
+    prevBtn.onclick = () => showSlide(currentIdx - 1);
+    nextBtn.onclick = () => showSlide(currentIdx + 1);
+
+    for (let i = 1; i <= 20; i++) {
+      const src = `img/${productoID}-${i}.jpeg`;
+      const img = new Image();
+      img.onload = () => { foundAny = true; addImagen(src, i); };
+      img.src    = src;
+    }
+    setTimeout(() => {
+      if (!foundAny) {
+        const portada = `img/${productoID}.jpeg`;
+        const img     = new Image();
+        img.onload    = () => addImagen(portada, 0);
+        img.src       = portada;
+      }
+    }, 300);
+  </script>
+
+</body>
+</html>
