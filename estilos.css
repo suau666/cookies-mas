@@ -110,11 +110,14 @@ body:not(.page-producto) #page-content { animation: fadeUp 0.55s var(--ease-out)
   text-decoration: none;
 }
 .nav-logo {
-  height: calc(54px - var(--shrink,0) * 14px);
-  width: calc(54px - var(--shrink,0) * 14px) !important; /* Forzamos a que sea un cuadrado perfecto */
-  object-fit: contain !important; /* Mantiene la proporción original intacta SIEMPRE */
-  flex-shrink: 0; /* Prohíbe que el menú la aplaste a los costados */
-  transition: height .14s linear, width .14s linear;
+  height: calc(54px - var(--shrink,0) * 14px) !important;
+  width: calc(54px - var(--shrink,0) * 14px) !important;
+  min-width: calc(54px - var(--shrink,0) * 14px) !important; /* Evita que flexbox lo aplaste */
+  object-fit: cover !important; /* Centra y rellena la caja sin deformar */
+  object-position: center !important;
+  border-radius: 50% !important; /* Fuerza el corte circular perfecto */
+  flex-shrink: 0 !important;
+  transition: height .14s linear, width .14s linear, min-width .14s linear;
   filter: drop-shadow(0 2px 4px rgba(44,24,16,0.12));
 }
 .brand-block {
