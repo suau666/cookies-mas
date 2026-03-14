@@ -373,7 +373,7 @@ body:not(.page-producto) #page-content { animation: fadeUp 0.55s var(--ease-out)
   font-family: 'Brittany', cursive;
   font-size: clamp(52px, 10vw, 100px);
   color: var(--primary);
-  line-height: 1.0;
+  line-height: 1.2;
   margin-bottom: 20px;
 }
 .hero-title em {
