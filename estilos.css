@@ -101,7 +101,7 @@ body:not(.page-producto) #page-content { animation: fadeUp 0.55s var(--ease-out)
   transition: height .14s linear;
 }
 
-/* ── Brand ── */
+/* ── Brand & Logo Rígido ── */
 .nav-brand {
   display: flex;
   align-items: center;
@@ -109,27 +109,31 @@ body:not(.page-producto) #page-content { animation: fadeUp 0.55s var(--ease-out)
   flex-shrink: 0;
   text-decoration: none;
 }
-.caja-logo {
-  /* Esta es la caja rígida que nunca se va a deformar */
+
+/* La caja que lo obliga a ser 100% circular */
+.contenedor-del-logo {
   height: calc(54px - var(--shrink,0) * 14px);
   width: calc(54px - var(--shrink,0) * 14px);
-  flex-shrink: 0; /* Prohíbe terminantemente el aplastamiento */
-  border-radius: 50%; /* Círculo perfecto */
-  overflow: hidden; /* Corta como una tijera todo lo que sobre de la imagen */
+  min-width: calc(54px - var(--shrink,0) * 14px); /* Prohíbe que se aplaste */
+  border-radius: 50%;
+  overflow: hidden;
+  background: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: height .14s linear, width .14s linear;
-  filter: drop-shadow(0 2px 4px rgba(44,24,16,0.12));
+  flex-shrink: 0;
+  transition: height .14s linear, width .14s linear, min-width .14s linear;
+  box-shadow: 0 2px 4px rgba(44,24,16,0.12);
 }
 
-.nav-logo {
-  /* La imagen simplemente se adapta a la caja perfecta */
+/* La imagen rellena la caja */
+.contenedor-del-logo img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* Si la imagen no es cuadrada, recorta lo que sobra y no la deforma */
   display: block;
 }
+
 .brand-block {
   display: flex;
   flex-direction: row;
@@ -394,6 +398,8 @@ body:not(.page-producto) #page-content { animation: fadeUp 0.55s var(--ease-out)
 .hero-title em {
   font-style: normal;
   color: var(--accent-dk);
+  display: block;
+  margin-top: 15px; /* Empuja la palabra para que no choque con la Q */
 }
 .hero-desc {
   font-family: 'Quattrocento', serif;
