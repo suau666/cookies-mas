@@ -109,16 +109,26 @@ body:not(.page-producto) #page-content { animation: fadeUp 0.55s var(--ease-out)
   flex-shrink: 0;
   text-decoration: none;
 }
-.nav-logo {
-  height: calc(54px - var(--shrink,0) * 14px) !important;
-  width: calc(54px - var(--shrink,0) * 14px) !important;
-  min-width: calc(54px - var(--shrink,0) * 14px) !important; /* Evita que flexbox lo aplaste */
-  object-fit: cover !important; /* Centra y rellena la caja sin deformar */
-  object-position: center !important;
-  border-radius: 50% !important; /* Fuerza el corte circular perfecto */
-  flex-shrink: 0 !important;
-  transition: height .14s linear, width .14s linear, min-width .14s linear;
+.caja-logo {
+  /* Esta es la caja rígida que nunca se va a deformar */
+  height: calc(54px - var(--shrink,0) * 14px);
+  width: calc(54px - var(--shrink,0) * 14px);
+  flex-shrink: 0; /* Prohíbe terminantemente el aplastamiento */
+  border-radius: 50%; /* Círculo perfecto */
+  overflow: hidden; /* Corta como una tijera todo lo que sobre de la imagen */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: height .14s linear, width .14s linear;
   filter: drop-shadow(0 2px 4px rgba(44,24,16,0.12));
+}
+
+.nav-logo {
+  /* La imagen simplemente se adapta a la caja perfecta */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .brand-block {
   display: flex;
