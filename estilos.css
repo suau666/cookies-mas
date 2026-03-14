@@ -111,8 +111,11 @@ body:not(.page-producto) #page-content { animation: fadeUp 0.55s var(--ease-out)
 }
 .nav-logo {
   height: calc(54px - var(--shrink,0) * 14px);
-  width: auto;
-  transition: height .14s linear;
+  width: calc(54px - var(--shrink,0) * 14px); /* Forzamos el ancho para que sea idéntico al alto */
+  object-fit: cover; /* Ajusta la imagen sin deformarla */
+  border-radius: 50%; /* Corte circular perfecto */
+  flex-shrink: 0; /* Prohíbe que el menú lo aplaste */
+  transition: height .14s linear, width .14s linear;
   filter: drop-shadow(0 2px 4px rgba(44,24,16,0.12));
 }
 .brand-block {
